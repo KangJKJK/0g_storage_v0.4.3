@@ -38,43 +38,43 @@ execute_with_prompt() {
 }
 
 # 1. 패키지 업데이트 및 필수 패키지 설치
-execute_command "패키지 업데이트 중..." "sudo apt-get update"
+execute_with_prompt "패키지 업데이트 중..." "sudo apt-get update"
 read -p "설치하려는 패키지들에 대한 권한을 부여하려면 Enter를 누르세요..."
-execute_command "필수 패키지 설치 중..." "sudo apt-get install -y clang cmake build-essential"
+execute_with_prompt "필수 패키지 설치 중..." "sudo apt-get install -y clang cmake build-essential"
 sleep 2
 
 # 2. Go 설치
-execute_command "Go 1.22.0 다운로드 중..." "wget https://go.dev/dl/go1.22.0.linux-amd64.tar.gz"
+execute_with_prompt "Go 다운로드 중..." "wget https://go.dev/dl/go1.22.0.linux-amd64.tar.gz"
 sleep 2
 
-execute_command "Go 설치 후, 경로 추가 중..." "sudo rm -rf /usr/local/go && sudo tar -C /usr/local -xzf go1.22.0.linux-amd64.tar.gz"
+execute_with_prompt "Go 설치 후, 경로 추가 중..." "sudo rm -rf /usr/local/go && sudo tar -C /usr/local -xzf go1.22.0.linux-amd64.tar.gz"
 export PATH=$PATH:/usr/local/go/bin
 echo "PATH=$PATH"  # 경로가 제대로 추가되었는지 확인
 sleep 2
 
 # 3. Rust 설치
-execute_command "Rust 설치 중..." "curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh && rustup update"
+execute_with_prompt "Rust 설치 중..." "curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh && rustup update"
 sleep 2
 
 # 5. 0g-storage-node 디렉토리 제거 및 리포지토리 클론
-execute_command "기존 0g-storage-node 디렉토리 제거 중..." "sudo rm -rf $HOME/0g-storage-node"
-execute_command "git 설치 중..." "sudo apt install -y git"
+execute_with_prompt "기존 0g-storage-node 디렉토리 제거 중..." "sudo rm -rf $HOME/0g-storage-node"
+execute_with_prompt "git 설치 중..." "sudo apt install -y git"
 read -p "Git을 설치한 후 계속하려면 Enter를 누르세요..."
-execute_command "0g-storage-node 리포지토리 클론 중..." "git clone -b v0.4.3 https://github.com/0glabs/0g-storage-node.git"
-execute_command "특정 커밋 체크아웃 중..." "cd $HOME/0g-storage-node && git stash && git fetch --all --tags && git checkout 2e83484"
-execute_command "git 서브모듈 초기화 중..." "git submodule update --init"
-execute_command "Cargo 설치 중..." "sudo apt install -y cargo"
+execute_with_prompt "0g-storage-node 리포지토리 클론 중..." "git clone -b v0.4.3 https://github.com/0glabs/0g-storage-node.git"
+execute_with_prompt "특정 커밋 체크아웃 중..." "cd $HOME/0g-storage-node && git stash && git fetch --all --tags && git checkout 2e83484"
+execute_with_prompt "git 서브모듈 초기화 중..." "git submodule update --init"
+execute_with_prompt "Cargo 설치 중..." "sudo apt install -y cargo"
 read -p "Cargo를 설치한 후 계속하려면 Enter를 누르세요..."
 echo -e "${YELLOW}0g-storage-node 빌드 중...${NC}"
-execute_command "Cargo 빌드 중..." "cargo build --release"
+execute_with_prompt "Cargo 빌드 중..." "cargo build --release"
 echo -e "${GREEN}0g-storage-node 빌드 완료.${NC}"
 sleep 2
 
 # 6. 프로필 변경
 
 # 프로파일 변수 업데이트
-execute_command "config파일 삭제 중..." "sudo rm -rf $HOME/0g-storage-node/run/config.toml"
-execute_command "config파일 다운 중..." "sudo curl -o $HOME/0g-storage-node/run/config.toml https://raw.githubusercontent.com/z8000kr/0g-storage-node/main/run/config.toml"
+execute_with_prompt "config파일 삭제 중..." "sudo rm -rf $HOME/0g-storage-node/run/config.toml"
+execute_with_prompt "config파일 다운 중..." "sudo curl -o $HOME/0g-storage-node/run/config.toml https://raw.githubusercontent.com/z8000kr/0g-storage-node/main/run/config.toml"
 
 # config.toml 파일 수정
 echo -e "${GREEN}config파일 수정 중...${NC}"
@@ -94,9 +94,9 @@ sed -i 's|# mine_contract_address = ""|mine_contract_address = "0x6815F41019255e
 sed -i 's|# shard_position = "0/2"|shard_position = "0/2"\n\nreward_contract_address = "0x51998C4d486F406a788B766d93510980ae1f9360"|' $CONFIG_FILE
 sed -i 's|# auto_sync_enabled = false|auto_sync_enabled = true|' $CONFIG_FILE
 
-# 사용자에게 RPC 엔드포인트를 선택하도록 요청하는 함수
+# 사용자에게 RPC 엔드포인트을 선택하도록 요청하는 함수
 select_rpc_endpoint() {
-    echo -e "${GREEN}다음 중 하나의 RPC 엔드포인트를 선택하세요:${NC}"
+    echo -e "${GREEN}다음 중 하나의 RPC 엔드포인트을 선택하세요:${NC}"
     echo "1) https://evm-rpc-0gchain.josephtran.xyz/"
     echo "2) https://0g-testnet-rpc.tech-coha05.xyz/"
     echo "3) https://lightnode-rpc-0g.grandvalleys.com/"
@@ -141,10 +141,10 @@ update_miner_key
 echo -e "${GREEN}프라이빗키와 RPC 엔드포인트가 업데이트 되었습니다.${NC}"
 
 # 프로파일 다시 로드
-execute_command "프로필 업데이트중..." "source ~/.bash_profile"
+execute_with_prompt "프로필 업데이트중..." "source ~/.bash_profile"
 
 # 7. zgs.service 파일 생성
-execute_command "zgs.service 파일 생성 중..." "sudo tee /etc/systemd/system/zgs.service > /dev/null <<EOF
+execute_with_prompt "zgs.service 파일 생성 중..." "sudo tee /etc/systemd/system/zgs.service > /dev/null <<EOF
 [Unit]
 Description=ZGS Node
 After=network.target
@@ -163,10 +163,10 @@ EOF"
 sleep 2
 
 # 8. UFW 설치 및 포트 개방
-execute_command "UFW 설치 중..." "sudo apt-get install -y ufw"
+execute_with_prompt "UFW 설치 중..." "sudo apt-get install -y ufw"
 read -p "UFW를 설치한 후 계속하려면 Enter를 누르세요..."
-execute_command "UFW 활성화 중..." "sudo ufw enable"
-execute_command "필요한 포트 개방 중..." \
+execute_with_prompt "UFW 활성화 중..." "sudo ufw enable"
+execute_with_prompt "필요한 포트 개방 중..." \
     "sudo ufw allow ssh && \
      sudo ufw allow 26658 && \
      sudo ufw allow 26656 && \
@@ -177,13 +177,13 @@ execute_command "필요한 포트 개방 중..." \
 sleep 2
 
 # 9. Systemd 서비스 재로드 및 zgs 서비스 시작
-execute_command "Systemd 서비스 재로드 중..." "sudo systemctl daemon-reload"
-execute_command "zgs 서비스 활성화 중..." "sudo systemctl enable zgs"
-execute_command "zgs 서비스 시작 중..." "sudo systemctl start zgs"
+execute_with_prompt "Systemd 서비스 재로드 중..." "sudo systemctl daemon-reload"
+execute_with_prompt "zgs 서비스 활성화 중..." "sudo systemctl enable zgs"
+execute_with_prompt "zgs 서비스 시작 중..." "sudo systemctl start zgs"
 sleep 2
 
 # 10. 로그 확인
-execute_command "로그 확인 중..." "tail -f ~/0g-storage-node/run/log/zgs.log.$(TZ=UTC date +%Y-%m-%d)"
+execute_with_prompt "로그 확인 중..." "tail -f ~/0g-storage-node/run/log/zgs.log.$(TZ=UTC date +%Y-%m-%d)"
 sleep 2
 
 echo -e "${GREEN}모든 작업이 완료되었습니다. 컨트롤+A+D로 스크린을 분리해주세요.${NC}"

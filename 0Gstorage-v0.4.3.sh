@@ -108,8 +108,6 @@ execute_with_prompt "Cargo 정리중..." "cargo clean"
 echo -e "${YELLOW}0g-storage-node 빌드 중...${NC}"
 
 # Cargo 빌드
-echo -e "${YELLOW}Cargo 빌드 중...${NC}"
-# `stdbuf`를 사용하여 출력 버퍼링을 비활성화
 execute_with_prompt "Cargo 빌드 중..." "stdbuf -oL cargo build --release"
 echo -e "${GREEN}0g-storage-node 빌드 완료.${NC}"
 sleep 2

@@ -75,10 +75,11 @@ fi
 execute_with_prompt "0g-storage-node 리포지토리 클론 중..." "git clone -b v0.4.3 https://github.com/0glabs/0g-storage-node.git"
 
 # 0g-storage-node 디렉토리로 이동
-cd $HOME/0g-storage-node
-cho -e "${YELLOW}현재 디렉토리: $(pwd)${NC}"
-sleep 1
+echo -e "${YELLOW}디렉토리 이동 시도 중...${NC}"
+cd $HOME/0g-storage-node || { echo -e "${RED}디렉토리 이동 실패${NC}"; exit 1; }
+echo -e "${YELLOW}현재 디렉토리: $(pwd)${NC}"
 
+# 이후 명령어 실행
 execute_with_prompt "특정 커밋 체크아웃 중..." "git stash && git fetch --all --tags && git checkout 2e83484"
 execute_with_prompt "git 서브모듈 초기화 중..." "git submodule update --init"
 

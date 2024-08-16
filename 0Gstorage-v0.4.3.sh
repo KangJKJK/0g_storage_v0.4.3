@@ -80,9 +80,17 @@ sleep 1
 
 execute_with_prompt "특정 커밋 체크아웃 중..." "git stash && git fetch --all --tags && git checkout 2e83484"
 execute_with_prompt "git 서브모듈 초기화 중..." "git submodule update --init"
-execute_with_prompt "Cargo 설치 중..." "sudo apt install -y cargo"
+
+# Cargo 설치 (이미 설치되어 있을 경우 건너뜁니다)
+if ! command -v cargo &> /dev/null; then
+    execute_with_prompt "Cargo 설치 중..." "sudo apt install -y cargo"
+else
+    echo -e "${GREEN}Cargo가 이미 설치되어 있습니다.${NC}"
+fi
+
 echo -e "${YELLOW}0g-storage-node 빌드 중...${NC}"
-execute_with_prompt "Cargo 빌드 중..." "sudo cargo build --release"
+# `cargo build --release`를 sudo 없이 실행
+execute_with_prompt "Cargo 빌드 중..." "cargo build --release"
 echo -e "${GREEN}0g-storage-node 빌드 완료.${NC}"
 sleep 2
 

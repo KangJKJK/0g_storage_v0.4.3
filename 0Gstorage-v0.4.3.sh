@@ -76,6 +76,7 @@ execute_with_prompt "0g-storage-node 리포지토리 클론 중..." "git clone -
 
 # 0g-storage-node 디렉토리로 이동
 cd $HOME/0g-storage-node
+cho -e "${YELLOW}현재 디렉토리: $(pwd)${NC}"
 sleep 1
 
 execute_with_prompt "특정 커밋 체크아웃 중..." "git stash && git fetch --all --tags && git checkout 2e83484"

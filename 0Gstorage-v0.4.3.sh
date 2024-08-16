@@ -44,12 +44,14 @@ execute_with_prompt "필수 패키지 설치 중..." "sudo apt-get install -y cl
 sleep 2
 
 # 2. Go 설치
-execute_with_prompt "Go 다운로드 중..." "wget https://go.dev/dl/go1.22.0.linux-amd64.tar.gz"
-sleep 2
-
-execute_with_prompt "Go 설치 후, 경로 추가 중..." "sudo rm -rf /usr/local/go && sudo tar -C /usr/local -xzf go1.22.0.linux-amd64.tar.gz"
-export PATH=$PATH:/usr/local/go/bin
-echo "PATH=$PATH"  # 경로가 제대로 추가되었는지 확인
+if ! command -v go &> /dev/null; then
+    execute_with_prompt "Go 다운로드 중..." "wget https://go.dev/dl/go1.22.0.linux-amd64.tar.gz"
+    execute_with_prompt "Go 설치 후, 경로 추가 중..." "rm -rf /usr/local/go && tar -C /usr/local -xzf go1.22.0.linux-amd64.tar.gz"
+    export PATH=$PATH:/usr/local/go/bin
+    echo "PATH=$PATH"  # 경로가 제대로 추가되었는지 확인
+else
+    echo -e "${GREEN}Go가 이미 설치되어 있습니다.${NC}"
+fi
 sleep 2
 
 # 3. Rust 설치
@@ -58,6 +60,7 @@ if ! command -v rustc &> /dev/null; then
     "curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y && rustup update"
     # 환경 변수 설정
     export PATH="$HOME/.cargo/bin:$PATH"
+    source "$HOME/.cargo/env"  # 현재 쉘에서 환경 변수 설정
 else
     echo -e "${GREEN}Rust가 이미 설치되어 있습니다.${NC}"
 fi

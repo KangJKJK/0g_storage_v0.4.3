@@ -86,6 +86,9 @@ execute_with_prompt "git 서브모듈 초기화 중..." "git submodule update --
 # Cargo 설치 (이미 설치되어 있을 경우 건너뜁니다)
 if ! command -v cargo &> /dev/null; then
     execute_with_prompt "Cargo 설치 중..." "sudo apt install -y cargo"
+    echo -e "${YELLOW}Cargo 설치 후, 경로 추가 중...${NC}"
+    export PATH="$HOME/.cargo/bin:$PATH"
+    echo "PATH=$PATH"  # 경로가 제대로 추가되었는지 확인
 else
     echo -e "${GREEN}Cargo가 이미 설치되어 있습니다.${NC}"
 fi

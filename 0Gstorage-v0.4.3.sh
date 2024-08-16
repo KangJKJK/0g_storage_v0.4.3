@@ -58,24 +58,13 @@ sleep 2
 if ! command -v rustc &> /dev/null; then
     execute_with_prompt "Rust 설치 중..." \
     "curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y"
-    # 환경 변수 설정
-    export PATH="$HOME/.cargo/bin:$PATH"
-    source "$HOME/.cargo/env"  # 현재 쉘에서 환경 변수 설정
-else
-    echo -e "${GREEN}Rust가 이미 설치되어 있습니다.${NC}"
 fi
+
+# 환경 변수 설정 (Rust가 이미 설치되어 있어도 업데이트)
+export PATH="$HOME/.cargo/bin:$PATH"
+source "$HOME/.cargo/env"  # 현재 쉘에서 환경 변수 설정
+
 sleep 2
-
-# 4. cargo 및 .cargo 삭제 (optional)
-if command -v cargo &> /dev/null; then
-    echo -e "${YELLOW}cargo 및 .cargo 디렉토리 삭제 중...${NC}"
-    execute_with_prompt "cargo 삭제 중..." "sudo apt-get remove --purge -y cargo"
-else
-    echo -e "${GREEN}cargo가 설치되어 있지 않습니다. 삭제 작업을 건너뜁니다.${NC}"
-fi
-
-echo -e "${YELLOW}root의 .cargo 디렉토리 삭제 중...${NC}"
-execute_with_prompt "root의 .cargo 디렉토리 삭제 중..." "sudo rm -rf /root/.cargo"
 
 # 5. 0g-storage-node 디렉토리 제거 및 리포지토리 클론
 if [ -d "$HOME/0g-storage-node" ]; then
@@ -141,7 +130,7 @@ select_rpc_endpoint() {
     read -p "선택 (1/2/3): " RPC_CHOICE
 
     case $RPC_CHOICE in
-         1)
+        1)
             RPC_URL="https://evm-rpc-0gchain.josephtran.xyz/"
             ;;
         2)

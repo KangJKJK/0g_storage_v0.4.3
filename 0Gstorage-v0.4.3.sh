@@ -94,14 +94,6 @@ execute_with_prompt "git 서브모듈 초기화 중..." "git submodule update --
 # Cargo 설치
 execute_with_prompt "Cargo 삭제 중..." "sudo apt-get remove --purge -y cargo"
 execute_with_prompt "Cargo 설치 중..." "sudo apt install -y cargo"
-echo -e "${YELLOW}Cargo 설치 후, 경로 추가 중...${NC}"
-
-# 환경 변수 업데이트 (Cargo가 설치된 후)
-export PATH="$HOME/.cargo/bin:$PATH"
-echo "PATH=$PATH"  # 경로가 제대로 추가되었는지 확인
-
-# 빌드 디렉토리 정리
-execute_with_prompt "Cargo 정리중..." "cargo clean"
 
 # Cargo 빌드
 if [ "$(pwd)" != "$HOME/0g-storage-node" ]; then

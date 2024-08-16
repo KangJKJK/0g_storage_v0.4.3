@@ -53,7 +53,7 @@ echo "PATH=$PATH"  # 경로가 제대로 추가되었는지 확인
 sleep 2
 
 # 3. Rust 설치
-execute_with_prompt "Rust 설치 중..." "curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh && rustup update"
+execute_with_prompt "Rust 설치 중..." "curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh && rustup update && export PATH=\"\$PATH:/root/.cargo/bin\" && source ~/.bashrc"
 sleep 2
 
 # 5. 0g-storage-node 디렉토리 제거 및 리포지토리 클론

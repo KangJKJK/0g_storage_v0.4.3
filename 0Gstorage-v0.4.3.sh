@@ -109,7 +109,7 @@ if [ "$(pwd)" != "$HOME/0g-storage-node" ]; then
     echo -e "${RED}오류: 현재 디렉토리가 $HOME/0g-storage-node가 아닙니다.${NC}"
     exit 1
 fi
-execute_with_prompt "Cargo 빌드 중..." "sudo stdbuf -oL cargo build --release"
+execute_with_prompt "Cargo 빌드 중..." "cargo build --release"
 echo -e "${GREEN}0g-storage-node 빌드 완료.${NC}"
 sleep 2
 

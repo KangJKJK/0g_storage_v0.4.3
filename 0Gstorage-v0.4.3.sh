@@ -95,18 +95,22 @@ execute_with_prompt "git 서브모듈 초기화 중..." "git submodule update --
 if ! command -v cargo &> /dev/null; then
     execute_with_prompt "Cargo 설치 중..." "sudo apt install -y cargo"
     echo -e "${YELLOW}Cargo 설치 후, 경로 추가 중...${NC}"
-    export PATH="$HOME/.cargo/bin:$PATH"
-    echo "PATH=$PATH"  # 경로가 제대로 추가되었는지 확인
-else
-    echo -e "${GREEN}Cargo가 이미 설치되어 있습니다.${NC}"
-    # 환경 변수 업데이트
-    export PATH="$HOME/.cargo/bin:$PATH"
-    echo "PATH=$PATH"  # 경로가 제대로 추가되었는지 확인
 fi
 
+# 환경 변수 업데이트 (Cargo가 설치되어 있든 없든 실행)
+export PATH="$HOME/.cargo/bin:$PATH"
+echo "PATH=$PATH"  # 경로가 제대로 추가되었는지 확인
+
+# 빌드 디렉토리 정리
+echo -e "${YELLOW}Cargo 클린 중...${NC}"
+execute_with_prompt "Cargo 정리중..." "cargo clean"
+
 echo -e "${YELLOW}0g-storage-node 빌드 중...${NC}"
-# `cargo build --release`를 sudo 없이 실행
-execute_with_prompt "Cargo 빌드 중..." "cargo build --release"
+
+# Cargo 빌드
+echo -e "${YELLOW}Cargo 빌드 중...${NC}"
+# `stdbuf`를 사용하여 출력 버퍼링을 비활성화
+execute_with_prompt "Cargo 빌드 중..." "stdbuf -oL cargo build --release"
 echo -e "${GREEN}0g-storage-node 빌드 완료.${NC}"
 sleep 2
 

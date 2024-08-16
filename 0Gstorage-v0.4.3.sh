@@ -145,7 +145,7 @@ select_rpc_endpoint() {
 
 # miner_key를 config 파일에 업데이트하는 함수
 update_miner_key() {
-    echo -e "${GREEN}메타마스크 프라이빗키를 입력하세요:${NC}"
+    echo -e "${GREEN}메타마스크 버너지갑 프라이빗키를 입력하세요:${NC}"
     read -p ": " MINER_KEY
 
     # Update the miner_key in the config file

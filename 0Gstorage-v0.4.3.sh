@@ -91,13 +91,12 @@ echo -e "${YELLOW}현재 디렉토리: $(pwd)${NC}"
 execute_with_prompt "특정 커밋 체크아웃 중..." "git stash && git fetch --all --tags && git checkout 2e83484"
 execute_with_prompt "git 서브모듈 초기화 중..." "git submodule update --init"
 
-# Cargo 설치 (이미 설치되어 있을 경우 건너뜁니다)
-if ! command -v cargo &> /dev/null; then
-    execute_with_prompt "Cargo 설치 중..." "sudo apt install -y cargo"
-    echo -e "${YELLOW}Cargo 설치 후, 경로 추가 중...${NC}"
-fi
+# Cargo 설치
+execute_with_prompt "Cargo 삭제 중..." "sudo apt-get remove --purge -y cargo"
+execute_with_prompt "Cargo 설치 중..." "sudo apt install -y cargo"
+echo -e "${YELLOW}Cargo 설치 후, 경로 추가 중...${NC}"
 
-# 환경 변수 업데이트 (Cargo가 설치되어 있든 없든 실행)
+# 환경 변수 업데이트 (Cargo가 설치된 후)
 export PATH="$HOME/.cargo/bin:$PATH"
 echo "PATH=$PATH"  # 경로가 제대로 추가되었는지 확인
 

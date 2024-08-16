@@ -160,8 +160,8 @@ update_miner_key
 
 echo -e "${GREEN}프라이빗키와 RPC 엔드포인트가 업데이트 되었습니다.${NC}"
 
-# 프로파일 다시 로드
-execute_with_prompt "프로필 업데이트중..." "source ~/.bash_profile"
+# 프로필 업데이트
+execute_with_prompt "프로필 업데이트 중..." "source ~/.profile"
 
 # 7. zgs.service 파일 생성
 execute_with_prompt "zgs.service 파일 생성 중..." "sudo tee /etc/systemd/system/zgs.service > /dev/null <<EOF

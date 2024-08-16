@@ -66,6 +66,17 @@ else
 fi
 sleep 2
 
+# 4. cargo 및 .cargo 삭제 (optional)
+if command -v cargo &> /dev/null; then
+    echo -e "${YELLOW}cargo 및 .cargo 디렉토리 삭제 중...${NC}"
+    execute_with_prompt "cargo 삭제 중..." "sudo apt-get remove --purge -y cargo"
+else
+    echo -e "${GREEN}cargo가 설치되어 있지 않습니다. 삭제 작업을 건너뜁니다.${NC}"
+fi
+
+echo -e "${YELLOW}root의 .cargo 디렉토리 삭제 중...${NC}"
+execute_with_prompt "root의 .cargo 디렉토리 삭제 중..." "sudo rm -rf /root/.cargo"
+
 # 5. 0g-storage-node 디렉토리 제거 및 리포지토리 클론
 if [ -d "$HOME/0g-storage-node" ]; then
     echo -e "${YELLOW}디렉토리 $HOME/0g-storage-node 가 이미 존재합니다. 삭제 중...${NC}"
@@ -130,7 +141,7 @@ select_rpc_endpoint() {
     read -p "선택 (1/2/3): " RPC_CHOICE
 
     case $RPC_CHOICE in
-        1)
+         1)
             RPC_URL="https://evm-rpc-0gchain.josephtran.xyz/"
             ;;
         2)

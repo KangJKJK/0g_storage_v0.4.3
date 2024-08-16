@@ -74,13 +74,15 @@ fi
 
 execute_with_prompt "0g-storage-node 리포지토리 클론 중..." "git clone -b v0.4.3 https://github.com/0glabs/0g-storage-node.git"
 
-# 폴더를 이동하여 서브모듈 초기화 및 업데이트
+# 0g-storage-node 디렉토리로 이동
 cd $HOME/0g-storage-node
+sleep 1
+
 execute_with_prompt "특정 커밋 체크아웃 중..." "git stash && git fetch --all --tags && git checkout 2e83484"
 execute_with_prompt "git 서브모듈 초기화 중..." "git submodule update --init"
-execute_with_prompt "Cargo 설치 중..." "apt install -y cargo"
+execute_with_prompt "Cargo 설치 중..." "sudo apt install -y cargo"
 echo -e "${YELLOW}0g-storage-node 빌드 중...${NC}"
-execute_with_prompt "Cargo 빌드 중..." "cargo build --release"
+execute_with_prompt "Cargo 빌드 중..." "sudo cargo build --release"
 echo -e "${GREEN}0g-storage-node 빌드 완료.${NC}"
 sleep 2
 

@@ -53,8 +53,14 @@ echo "PATH=$PATH"  # 경로가 제대로 추가되었는지 확인
 sleep 2
 
 # 3. Rust 설치
-execute_with_prompt "Rust 설치 중..." \
-"curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y && rustup update && export PATH=\"\$PATH:/root/.cargo/bin\" && source ~/.cargo/env"
+if ! command -v rustc &> /dev/null; then
+    execute_with_prompt "Rust 설치 중..." \
+    "curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y && rustup update"
+    # 환경 변수 설정
+    export PATH="$HOME/.cargo/bin:$PATH"
+else
+    echo -e "${GREEN}Rust가 이미 설치되어 있습니다.${NC}"
+fi
 sleep 2
 
 # 5. 0g-storage-node 디렉토리 제거 및 리포지토리 클론

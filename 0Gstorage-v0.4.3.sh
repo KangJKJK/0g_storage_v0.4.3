@@ -57,7 +57,7 @@ sleep 2
 # 3. Rust 설치
 if ! command -v rustc &> /dev/null; then
     execute_with_prompt "Rust 설치 중..." \
-    "curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y && rustup update"
+    "curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y"
     # 환경 변수 설정
     export PATH="$HOME/.cargo/bin:$PATH"
     source "$HOME/.cargo/env"  # 현재 쉘에서 환경 변수 설정

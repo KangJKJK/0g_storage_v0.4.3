@@ -102,7 +102,6 @@ export PATH="$HOME/.cargo/bin:$PATH"
 echo "PATH=$PATH"  # 경로가 제대로 추가되었는지 확인
 
 # 빌드 디렉토리 정리
-echo -e "${YELLOW}Cargo 클린 중...${NC}"
 execute_with_prompt "Cargo 정리중..." "cargo clean"
 
 echo -e "${YELLOW}0g-storage-node 빌드 중...${NC}"

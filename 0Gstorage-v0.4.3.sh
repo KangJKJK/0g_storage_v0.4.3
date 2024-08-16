@@ -207,4 +207,5 @@ execute_with_prompt "로그 확인 중..." "tail -f ~/0g-storage-node/run/log/zg
 sleep 2
 
 echo -e "${GREEN}모든 작업이 완료되었습니다. 컨트롤+A+D로 스크린을 분리해주세요.${NC}"
+echo -e "${RED}https://faucet.0g.ai/ 에서 반드시 포셋을 받아주세요.${NC}"
 echo -e "${GREEN}스크립트작성자-kangjk${NC}"

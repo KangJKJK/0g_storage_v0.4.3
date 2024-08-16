@@ -55,21 +55,7 @@ fi
 sleep 2
 
 # 3. Rust 설치
-if ! command -v rustc &> /dev/null; then
-    execute_with_prompt "Rust 설치 중..." \
-    "curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y"
-    echo -e "${YELLOW}Rust 설치 후, 경로 추가 중...${NC}"
-    export PATH="$HOME/.cargo/bin:$PATH"
-    echo "PATH=$PATH"  # 경로가 제대로 추가되었는지 확인
-    source "$HOME/.cargo/env"  # 현재 쉘에서 환경 변수 설정
-else
-    echo -e "${GREEN}Rust가 이미 설치되어 있습니다.${NC}"
-    # 환경 변수 업데이트
-    export PATH="$HOME/.cargo/bin:$PATH"
-    echo "PATH=$PATH"  # 경로가 제대로 추가되었는지 확인
-    source "$HOME/.cargo/env"  # 현재 쉘에서 환경 변수 설정
-fi
-sleep 2
+execute_with_prompt "Rust 설치 중..." "curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y"
 
 # 4. .gz 파일 삭제
 execute_with_prompt "모든 .gz 파일 삭제 중..." "sudo find $HOME -name '*.gz' -type f -delete"

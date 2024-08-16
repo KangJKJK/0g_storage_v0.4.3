@@ -91,6 +91,9 @@ if ! command -v cargo &> /dev/null; then
     echo "PATH=$PATH"  # 경로가 제대로 추가되었는지 확인
 else
     echo -e "${GREEN}Cargo가 이미 설치되어 있습니다.${NC}"
+    # 환경 변수 업데이트
+    export PATH="$HOME/.cargo/bin:$PATH"
+    echo "PATH=$PATH"  # 경로가 제대로 추가되었는지 확인
 fi
 
 echo -e "${YELLOW}0g-storage-node 빌드 중...${NC}"

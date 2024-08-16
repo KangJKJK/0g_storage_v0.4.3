@@ -64,10 +64,14 @@ fi
 sleep 2
 
 # 5. 0g-storage-node 디렉토리 제거 및 리포지토리 클론
-execute_with_prompt "기존 0g-storage-node 디렉토리 제거 중..." "rm -rf $HOME/0g-storage-node"
+if [ -d "$HOME/0g-storage-node" ]; then
+    echo -e "${YELLOW}디렉토리 $HOME/0g-storage-node 가 이미 존재합니다. 삭제 중...${NC}"
+    execute_with_prompt "기존 0g-storage-node 디렉토리 제거 중..." "sudo rm -rf $HOME/0g-storage-node"
+fi
+
 execute_with_prompt "0g-storage-node 리포지토리 클론 중..." "git clone -b v0.4.3 https://github.com/0glabs/0g-storage-node.git"
 
-# 폴더를 이동하여 서브모듈 초기화
+# 폴더를 이동하여 서브모듈 초기화 및 업데이트
 cd $HOME/0g-storage-node
 execute_with_prompt "특정 커밋 체크아웃 중..." "git stash && git fetch --all --tags && git checkout 2e83484"
 execute_with_prompt "git 서브모듈 초기화 중..." "git submodule update --init"

@@ -37,6 +37,11 @@ execute_with_prompt() {
     fi
 }
 
+# 안내 메시지
+echo -e "${YELLOW}설치 도중 문제가 발생하면 다음 명령어를 입력하고 다시 시도하세요:${NC}"
+echo -e "${YELLOW}sudo rm -f /root/0Gstorage-v0.4.3.sh${NC}"
+echo
+
 # 1. 패키지 업데이트 및 필수 패키지 설치
 execute_with_prompt "패키지 업데이트 중..." "sudo apt-get update"
 read -p "설치하려는 패키지들에 대한 권한을 부여하려면 Enter를 누르세요..."

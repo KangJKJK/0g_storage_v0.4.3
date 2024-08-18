@@ -320,5 +320,5 @@ sleep 5
 
 echo -e "${GREEN}모든 작업이 완료되었습니다. 컨트롤+A+D로 스크린을 분리해주세요.${NC}"
 echo -e "${RED}https://faucet.0g.ai/ 에서 반드시 포셋을 받아주세요.${NC}"
-echo -e "${RED}다음 명령어로 로그를 확인하세요. tail -f ~/0g-storage-node/run/log/zgs.log.\$(TZ=UTC date +%Y-%m-%d) ${NC}"
+echo -e "${RED}다음 명령어로 로그를 확인하세요. tail -f ~/0g-storage-node/run/log/zgs.log.\$\(TZ=UTC date +%Y-%m-%d\) ${NC}"
 echo -e "${GREEN}스크립트작성자-https://t.me/kjkresearch${NC}"

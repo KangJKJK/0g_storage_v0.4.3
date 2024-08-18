@@ -136,7 +136,6 @@ stop_zgs_service() {
     sudo systemctl stop zgs || true
 }
 
-
 # 서비스가 중지된 후 다음 작업 수행
 check_and_stop_service
 

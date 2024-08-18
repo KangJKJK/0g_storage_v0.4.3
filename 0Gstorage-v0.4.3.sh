@@ -146,9 +146,10 @@ select_rpc_endpoint() {
     esac
 
     # Update the blockchain_rpc_endpoint in the config file
-    sed -i "s|# blockchain_rpc_endpoint = \"http://127.0.0.1:8545\"|blockchain_rpc_endpoint = \"$RPC_URL\"|" $CONFIG_FILE
-}
+    sed -i "s|^blockchain_rpc_endpoint = \".*\"|blockchain_rpc_endpoint = \"$RPC_URL\"|" $CONFIG_FILE
 
+    echo -e "${GREEN}RPC 엔드포인트가 $RPC_URL 으로 설정되었습니다.${NC}"
+}
 # miner_key를 config 파일에 업데이트하는 함수
 update_miner_key() {
     echo -e "${GREEN}메타마스크 버너지갑 프라이빗키를 입력하세요:${NC}"

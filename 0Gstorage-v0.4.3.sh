@@ -200,8 +200,6 @@ sleep 2
 execute_with_prompt "config파일 삭제 중..." "sudo rm -rf $HOME/0g-storage-node/run/config.toml"
 execute_with_prompt "config파일 다운 중..." "sudo curl -o $HOME/0g-storage-node/run/config.toml https://raw.githubusercontent.com/z8000kr/0g-storage-node/main/run/config.toml"
 
-#!/bin/bash
-
 # config.toml 파일 수정
 echo -e "${GREEN}config파일 수정 중...${NC}"
 

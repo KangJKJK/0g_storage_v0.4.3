@@ -152,7 +152,7 @@ select_rpc_endpoint() {
     done
 
     # Update the blockchain_rpc_endpoint in the config file
-    sed -i "s|^blockchain_rpc_endpoint = \".*\"|blockchain_rpc_endpoint = \"$RPC_URL\"|" $CONFIG_FILE
+    sed -i "s|^\(blockchain_rpc_endpoint *= *\).*|\1\"$RPC_URL\"|" "$CONFIG_FILE"
 
     echo -e "${GREEN}RPC 엔드포인트가 $RPC_URL 으로 설정되었습니다.${NC}"
 }

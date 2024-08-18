@@ -185,12 +185,13 @@ execute_with_prompt "git 서브모듈 초기화 중..." "git submodule update --
 execute_with_prompt "Cargo 삭제 중..." "sudo apt-get remove --purge -y cargo"
 execute_with_prompt "Cargo 설치 중..." "sudo apt install -y cargo"
 
+
 # Cargo 빌드
 if [ "$(pwd)" != "$HOME/0g-storage-node" ]; then
     echo -e "${RED}오류: 현재 디렉토리가 $HOME/0g-storage-node가 아닙니다.${NC}"
     exit 1
 fi
-
+execute_with_prompt "Cargo 빌드 중...시간이 오래 걸립니다." "stdbuf -i0 -o0 -e0 cargo build --release"
 echo -e "${GREEN}0g-storage-node 빌드 완료.${NC}"
 sleep 2
 

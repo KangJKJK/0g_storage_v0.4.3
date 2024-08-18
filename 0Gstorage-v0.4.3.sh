@@ -259,14 +259,6 @@ update_settings() {
     sed -i '/# shard_position = "0\/2"/a reward_contract_address = "0x51998C4d486F406a788B766d93510980ae1f9360"' $CONFIG_FILE
 }
 
-# RPC 엔드포인트 선택 함수 실행
-select_rpc_endpoint
-
-# 업데이트 함수 실행
-update_miner_key
-
-echo -e "${GREEN}프라이빗키와 RPC 엔드포인트가 업데이트 되었습니다.${NC}"
-
 # miner_key를 config 파일에 업데이트하는 함수
 update_miner_key() {
     echo -e "${GREEN}메타마스크 프라이빗키를 입력하세요:${NC}"
@@ -275,6 +267,14 @@ update_miner_key() {
     # miner_key 값을 사용자가 입력한 값으로 업데이트
     sed -i "s|^miner_key = \".*\"|miner_key = \"$MINER_KEY\"|" $CONFIG_FILE
 }
+
+# RPC 엔드포인트 선택 함수 실행
+select_rpc_endpoint
+
+# 업데이트 함수 실행
+update_miner_key
+
+echo -e "${GREEN}프라이빗키와 RPC 엔드포인트가 업데이트 되었습니다.${NC}"
 
 # 프로필 업데이트
 execute_with_prompt "프로필 업데이트 중..." "source ~/.profile"

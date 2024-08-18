@@ -209,8 +209,12 @@ CONFIG_FILE="$HOME/0g-storage-node/run/config.toml"
 # 파일 권한 설정
 chmod u+rw $CONFIG_FILE
 
-# network_boot_nodes 업데이트
-sed -i '/# configured as well to enable UDP discovery./a network_boot_nodes = ["/ip4/54.219.26.22/udp/1234/p2p/16Uiu2HAmTVDGNhkHD98zDnJxQWu3i1FL1aFYeh9wiQTNu4pDCgps","/ip4/52.52.127.117/udp/1234/p2p/16Uiu2HAkzRjxK2gorngB1Xq84qDrT4hSVznYDHj6BkbaE4SGx9oS","/ip4/18.162.65.205/udp/1234/p2p/16Uiu2HAm2k6ua2mGgvZ8rTMV8GhpW71aVzkQWy7D37TTDuLCpgmX"]' $CONFIG_FILE
+# 네트워크 부트 노드 업데이트
+update_network_boot_nodes() {
+    # 기존 네트워크 부트 노드가 있는지 확인하고, 있으면 제거합니다.
+    sed -i '/network_boot_nodes = \[/d' $CONFIG_FILE
+    sed -i '/# configured as well to enable UDP discovery./a network_boot_nodes = ["/ip4/54.219.26.22/udp/1234/p2p/16Uiu2HAmTVDGNhkHD98zDnJxQWu3i1FL1aFYeh9wiQTNu4pDCgps","/ip4/52.52.127.117/udp/1234/p2p/16Uiu2HAkzRjxK2gorngB1Xq84qDrT4hSVznYDHj6BkbaE4SGx9oS","/ip4/18.162.65.205/udp/1234/p2p/16Uiu2HAm2k6ua2mGgvZ8rTMV8GhpW71aVzkQWy7D37TTDuLCpgmX"]' $CONFIG_FILE
+}
 
 # 사용자에게 RPC 엔드포인트를 선택하도록 요청하는 함수
 select_rpc_endpoint() {
@@ -228,35 +232,31 @@ select_rpc_endpoint() {
         *) echo "잘못된 선택입니다. 다시 시도하세요." && select_rpc_endpoint ;;
     esac
 
+    # 기존 RPC 설정이 있는지 확인하고, 있으면 제거합니다.
+    sed -i '/blockchain_rpc_endpoint = /d' $CONFIG_FILE
     # blockchain_rpc_endpoint 업데이트
-    sed -i '/# RPC endpoint to sync event logs on EVM compatible blockchain./a blockchain_rpc_endpoint = "'$RPC_URL'"' $CONFIG_FILE
+    sed -i "/# RPC endpoint to sync event logs on EVM compatible blockchain./a blockchain_rpc_endpoint = \"$RPC_URL\"" $CONFIG_FILE
 
     echo "RPC 엔드포인트가 $RPC_URL으로 설정되었습니다."
 }
 
-# log_contract_address 업데이트
-sed -i '/# Flow contract address to sync event logs./a log_contract_address = "0xbD2C3F0E65eDF5582141C35969d66e34629cC768"' $CONFIG_FILE
+# 계약 주소 및 기타 설정 업데이트
+update_settings() {
+    # 기존 설정이 있는지 확인하고, 있으면 제거합니다.
+    sed -i '/log_contract_address = /d' $CONFIG_FILE
+    sed -i '/log_sync_start_block_number = /d' $CONFIG_FILE
+    sed -i '/confirmation_block_count = /d' $CONFIG_FILE
+    sed -i '/mine_contract_address = /d' $CONFIG_FILE
+    sed -i '/auto_sync_enabled = /d' $CONFIG_FILE
+    sed -i '/reward_contract_address = /d' $CONFIG_FILE
 
-# log_sync_start_block_number 업데이트
-sed -i '/# the block number when flow contract deployed./a log_sync_start_block_number = 595059' $CONFIG_FILE
-
-# confirmation_block_count 업데이트
-sed -i '/# Number of blocks to confirm a transaction./a confirmation_block_count = 6' $CONFIG_FILE
-
-# mine_contract_address 업데이트
-sed -i '/# Mine contract address for incentive./a mine_contract_address = "0x6815F41019255e00D6F34aAB8397a6Af5b6D806f"' $CONFIG_FILE
-
-# auto_sync_enabled 업데이트
-sed -i '/# all files, and sufficient disk space is required./a auto_sync_enabled = true' $CONFIG_FILE
-
-# shard_position 및 reward_contract_address 업데이트
-sed -i '/# shard_position = "0\/2"/a reward_contract_address = "0x51998C4d486F406a788B766d93510980ae1f9360"' $CONFIG_FILE
-
-# miner_key를 config 파일에 업데이트하는 함수
-update_miner_key() {
-    echo "메타마스크 프라이빗키를 입력하세요:"
-    read -p ": " MINER_KEY
-    sed -i "s|^miner_key = \".*\"|miner_key = \"$MINER_KEY\"|" $CONFIG_FILE
+    # 새로운 설정 추가
+    sed -i '/# Flow contract address to sync event logs./a log_contract_address = "0xbD2C3F0E65eDF5582141C35969d66e34629cC768"' $CONFIG_FILE
+    sed -i '/# the block number when flow contract deployed./a log_sync_start_block_number = 595059' $CONFIG_FILE
+    sed -i '/# Number of blocks to confirm a transaction./a confirmation_block_count = 6' $CONFIG_FILE
+    sed -i '/# Mine contract address for incentive./a mine_contract_address = "0x6815F41019255e00D6F34aAB8397a6Af5b6D806f"' $CONFIG_FILE
+    sed -i '/# all files, and sufficient disk space is required./a auto_sync_enabled = true' $CONFIG_FILE
+    sed -i '/# shard_position = "0\/2"/a reward_contract_address = "0x51998C4d486F406a788B766d93510980ae1f9360"' $CONFIG_FILE
 }
 
 # RPC 엔드포인트 선택 함수 실행

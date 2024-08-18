@@ -46,6 +46,7 @@ echo
 execute_with_prompt "패키지 업데이트 중..." "sudo apt-get update"
 read -p "설치하려는 패키지들에 대한 권한을 부여하려면 Enter를 누르세요..."
 execute_with_prompt "필수 패키지 설치 중..." "sudo apt-get install -y clang cmake build-essential"
+execute_with_prompt "git 설치 중..." "sudo apt update && sudo apt install git -y"
 sleep 2
 
 # 2. Go 설치

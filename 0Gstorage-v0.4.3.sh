@@ -111,6 +111,7 @@ execute_with_prompt "패키지 업데이트 중..." "sudo apt-get update"
 read -p "설치하려는 패키지들에 대한 권한을 부여하려면 Enter를 누르세요..."
 execute_with_prompt "필수 패키지 설치 중..." "sudo apt-get install -y clang cmake build-essential"
 execute_with_prompt "git 설치 중..." "sudo apt update && sudo apt install git -y"
+execute_with_prompt "stdbuf 설치 중..." "sudo apt-get install coreutils -y"
 sleep 2
 
 # 2. Go 설치
@@ -156,7 +157,7 @@ if [ "$(pwd)" != "$HOME/0g-storage-node" ]; then
     echo -e "${RED}오류: 현재 디렉토리가 $HOME/0g-storage-node가 아닙니다.${NC}"
     exit 1
 fi
-execute_with_prompt "Cargo 빌드 중..." "cargo build --release"
+execute_with_prompt "Cargo 빌드 중..." "stdbuf -i0 -o0 -e0 cargo build --release"
 echo -e "${GREEN}0g-storage-node 빌드 완료.${NC}"
 sleep 2
 

@@ -190,7 +190,7 @@ if [ "$(pwd)" != "$HOME/0g-storage-node" ]; then
     echo -e "${RED}오류: 현재 디렉토리가 $HOME/0g-storage-node가 아닙니다.${NC}"
     exit 1
 fi
-execute_with_prompt "Cargo 빌드 중..." "stdbuf -i0 -o0 -e0 cargo build --release"
+
 echo -e "${GREEN}0g-storage-node 빌드 완료.${NC}"
 sleep 2
 
@@ -244,35 +244,35 @@ sed -i '/^# auto_sync_enabled = false/a auto_sync_enabled = true' $CONFIG_FILE
 select_rpc_endpoint() {
     echo -e "${GREEN}다음 중 하나의 RPC 엔드포인트를 선택하세요:${NC}"
 
-    # 무한 루프를 사용하여 유효한 선택이 있을 때까지 반복
-    while true; do
-        echo "1) https://evm-rpc-0gchain.josephtran.xyz/"
-        echo "2) https://0g-testnet-rpc.tech-coha05.xyz/"
-        echo "3) https://lightnode-rpc-0g.grandvalleys.com/"
-        
-        read -p "선택 (1/2/3): " RPC_CHOICE
+# 무한 루프를 사용하여 유효한 선택이 있을 때까지 반복
+while true; do
+    echo "1) https://0g-new-rpc.dongqn.com/"
+    echo "2) https://evm-rpc-0gchain.josephtran.xyz/"
+    echo "3) https://0g-testnet-rpc.tech-coha05.xyz/"
+    
+    read -p "선택 (1/2/3): " RPC_CHOICE
 
-        # 입력값에서 공백 제거
-        RPC_CHOICE=$(echo "$RPC_CHOICE" | xargs)
+    # 입력값에서 공백 제거
+    RPC_CHOICE=$(echo "$RPC_CHOICE" | xargs)
 
-        case $RPC_CHOICE in
-            1)
-                RPC_URL="https://evm-rpc-0gchain.josephtran.xyz/"
-                break
-                ;;
-            2)
-                RPC_URL="https://0g-testnet-rpc.tech-coha05.xyz/"
-                break
-                ;;
-            3)
-                RPC_URL="https://lightnode-rpc-0g.grandvalleys.com/"
-                break
-                ;;
-            *)
-                echo -e "${RED}잘못된 선택입니다. 다시 시도하세요.${NC}"
-                ;;
-        esac
-    done
+    case $RPC_CHOICE in
+        1)
+            RPC_URL="https://0g-new-rpc.dongqn.com/"
+            break
+            ;;
+        2)
+            RPC_URL="https://evm-rpc-0gchain.josephtran.xyz/"
+            break
+            ;;
+        3)
+            RPC_URL="https://0g-testnet-rpc.tech-coha05.xyz/"
+            break
+            ;;
+        *)
+            echo -e "${RED}잘못된 선택입니다. 다시 시도하세요.${NC}"
+            ;;
+    esac
+done
 
     # Update the blockchain_rpc_endpoint in the config file
     sed -i '/^blockchain_rpc_endpoint = /d' "$CONFIG_FILE"

@@ -341,10 +341,7 @@ sleep 2
 execute_with_prompt "Systemd 서비스 재로드 중..." "sudo systemctl daemon-reload"
 execute_with_prompt "zgs 서비스 활성화 중..." "sudo systemctl enable zgs"
 execute_with_prompt "zgs 서비스 시작 중..." "sudo systemctl start zgs"
-sleep 2
-
-# 서비스 시작 완료를 기다림
-wait_for_service "zgs"
+sleep 5
 
 # 10. 로그 확인
 execute_with_prompt "로그 확인 중..." "tail -f ~/0g-storage-node/run/log/zgs.log.$(TZ=UTC date +%Y-%m-%d)"

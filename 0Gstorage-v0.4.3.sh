@@ -197,6 +197,9 @@ select_rpc_endpoint() {
         
         read -p "선택 (1/2/3): " RPC_CHOICE
 
+        # 입력값에서 공백 제거
+        RPC_CHOICE=$(echo "$RPC_CHOICE" | xargs)
+
         case $RPC_CHOICE in
             1)
                 RPC_URL="https://evm-rpc-0gchain.josephtran.xyz/"

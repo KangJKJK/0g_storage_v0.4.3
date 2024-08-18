@@ -130,14 +130,12 @@ fi
 echo -e "${GREEN}시스템 최적화 작업이 완료되었습니다.${NC}"
 
 
-# zgs 서비스가 존재하는지 확인하고 중지
-check_and_stop_service() {
-    if systemctl list-units --type=service --state=running | grep -q 'zgs.service'; then
-        execute_with_prompt "Systemd 서비스 중지 중..." "sudo systemctl stop zgs"
-    else
-        echo -e "${RED}zgs 서비스가 실행 중이 아니거나 존재하지 않습니다.${NC}"
-    fi
+# zgs 서비스 중지 (오류가 나더라도 무시)
+stop_zgs_service() {
+    echo -e "${GREEN}zgs 서비스 중지 중...${NC}"
+    sudo systemctl stop zgs || true
 }
+
 
 # 서비스가 중지된 후 다음 작업 수행
 check_and_stop_service

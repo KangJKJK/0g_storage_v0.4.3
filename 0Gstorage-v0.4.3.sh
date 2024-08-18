@@ -37,6 +37,29 @@ execute_with_prompt() {
     fi
 }
 
+# 서비스 시작 완료를 기다리는 함수
+wait_for_service() {
+    local service_name=$1
+    local max_attempts=10
+    local attempt=0
+    
+    echo "서비스 ${service_name}의 시작을 기다리는 중..."
+
+    while [ $attempt -lt $max_attempts ]; do
+        if systemctl is-active --quiet $service_name; then
+            echo "서비스 ${service_name}이 정상적으로 시작되었습니다."
+            return 0
+        fi
+
+        echo "서비스 ${service_name}이 아직 시작되지 않았습니다. ${attempt}초 대기 중..."
+        sleep 5
+        attempt=$((attempt + 1))
+    done
+
+    echo "서비스 ${service_name}이 ${max_attempts}초 내에 시작되지 않았습니다."
+    return 1
+}
+
 # 안내 메시지
 echo -e "${YELLOW}설치 도중 문제가 발생하면 다음 명령어를 입력하고 다시 시도하세요:${NC}"
 echo -e "${YELLOW}sudo rm -f /root/0Gstorage-v0.4.3.sh${NC}"
@@ -309,6 +332,9 @@ execute_with_prompt "Systemd 서비스 재로드 중..." "sudo systemctl daemon-
 execute_with_prompt "zgs 서비스 활성화 중..." "sudo systemctl enable zgs"
 execute_with_prompt "zgs 서비스 시작 중..." "sudo systemctl start zgs"
 sleep 2
+
+# 서비스 시작 완료를 기다림
+wait_for_service "zgs"
 
 # 10. 로그 확인
 execute_with_prompt "로그 확인 중..." "tail -f ~/0g-storage-node/run/log/zgs.log.$(TZ=UTC date +%Y-%m-%d)"

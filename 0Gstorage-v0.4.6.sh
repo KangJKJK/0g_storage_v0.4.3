@@ -170,7 +170,7 @@ if [ -d "$HOME/0g-storage-node" ]; then
     execute_with_prompt "기존 0g-storage-node 디렉토리 제거 중..." "sudo rm -rf $HOME/0g-storage-node"
 fi
 
-execute_with_prompt "0g-storage-node 리포지토리 클론 중..." "git clone -b v0.4.3 https://github.com/0glabs/0g-storage-node.git"
+execute_with_prompt "0g-storage-node 리포지토리 클론 중..." "git clone -b v0.4.6 https://github.com/0glabs/0g-storage-node.git"
 
 # 0g-storage-node 디렉토리로 이동
 echo -e "${YELLOW}디렉토리 이동 시도 중...${NC}"
@@ -178,7 +178,7 @@ cd $HOME/0g-storage-node || { echo -e "${RED}디렉토리 이동 실패${NC}"; e
 echo -e "${YELLOW}현재 디렉토리: $(pwd)${NC}"
 
 # 이후 명령어 실행
-execute_with_prompt "특정 커밋 체크아웃 중..." "git stash && git fetch --all --tags && git checkout 2e83484"
+execute_with_prompt "특정 커밋 체크아웃 중..." "git stash && git fetch --all --tags && git checkout 052d2d7"
 execute_with_prompt "git 서브모듈 초기화 중..." "git submodule update --init"
 
 # Cargo 설치
@@ -219,16 +219,16 @@ update_network_boot_nodes() {
 # 사용자에게 RPC 엔드포인트를 선택하도록 요청하는 함수
 select_rpc_endpoint() {
     echo "다음 중 하나의 RPC 엔드포인트를 선택하세요:"
-    echo "1) https://0g-new-rpc.dongqn.com/"
-    echo "2) https://evm-rpc-0gchain.josephtran.xyz/"
-    echo "3) https://0g-testnet-rpc.tech-coha05.xyz/"
+    echo "1) https://evmrpc-testnet.0g.ai/"
+    echo "2) https://0g-evm-vps.zstake.xyz/"
+    echo "3) https://evm-rpc-0gchain.josephtran.xyz/"
 
     read -p "선택 (1/2/3): " RPC_CHOICE
 
     case $RPC_CHOICE in
-        1) RPC_URL="https://0g-new-rpc.dongqn.com/" ;;
-        2) RPC_URL="https://evm-rpc-0gchain.josephtran.xyz/" ;;
-        3) RPC_URL="https://0g-testnet-rpc.tech-coha05.xyz/" ;;
+        1) RPC_URL="https://evmrpc-testnet.0g.ai/" ;;
+        2) RPC_URL="https://0g-evm-vps.zstake.xyz/" ;;
+        3) RPC_URL="https://evm-rpc-0gchain.josephtran.xyz/" ;;
         *) echo "잘못된 선택입니다. 다시 시도하세요." && select_rpc_endpoint ;;
     esac
 
@@ -251,12 +251,12 @@ update_settings() {
     sed -i '/reward_contract_address = /d' $CONFIG_FILE
 
     # 새로운 설정 추가
-    sed -i '/# Flow contract address to sync event logs./a log_contract_address = "0xbD2C3F0E65eDF5582141C35969d66e34629cC768"' $CONFIG_FILE
+    sed -i '/# Flow contract address to sync event logs./a log_contract_address = "0x0460aA47b41a66694c0a73f667a1b795A5ED3556"' $CONFIG_FILE
     sed -i '/# the block number when flow contract deployed./a log_sync_start_block_number = 595059' $CONFIG_FILE
     sed -i '/# Number of blocks to confirm a transaction./a confirmation_block_count = 6' $CONFIG_FILE
-    sed -i '/# Mine contract address for incentive./a mine_contract_address = "0x6815F41019255e00D6F34aAB8397a6Af5b6D806f"' $CONFIG_FILE
+    sed -i '/# Mine contract address for incentive./a mine_contract_address = "0x1785c8683b3c527618eFfF78d876d9dCB4b70285"' $CONFIG_FILE
     sed -i '/# all files, and sufficient disk space is required./a auto_sync_enabled = true' $CONFIG_FILE
-    sed -i '/# shard_position = "0\/2"/a reward_contract_address = "0x51998C4d486F406a788B766d93510980ae1f9360"' $CONFIG_FILE
+    sed -i '/# shard_position = "0\/2"/a reward_contract_address = "0x0496D0817BD8519e0de4894Dc379D35c35275609"' $CONFIG_FILE
 }
 
 # miner_key를 config 파일에 업데이트하는 함수
@@ -309,6 +309,7 @@ execute_with_prompt "필요한 포트 개방 중..." \
      sudo ufw allow 6060 && \
      sudo ufw allow 1317 && \
      sudo ufw allow 9090 && \
+     sudo ufw allow 8545 && \
      sudo ufw allow 9091"
 sleep 2
 

@@ -111,6 +111,11 @@ execute_with_prompt "git 서브모듈 초기화 중..." "git submodule update --
 # Cargo 설치
 execute_with_prompt "Cargo 삭제 중..." "sudo apt-get remove --purge -y cargo"
 execute_with_prompt "Cargo 설치 중..." "sudo apt install -y cargo"
+sudo apt update
+sudo apt install pkg-config
+sudo apt install libssl-dev
+sudo rustup update
+sudo cargo clean
 
 # Cargo 빌드
 if [ "$(pwd)" != "$HOME/0g-storage-node" ]; then

@@ -236,7 +236,7 @@ LimitNOFILE=65535
 
 [Install]
 WantedBy=multi-user.target
-EOF
+EOF"
 
 # 8. UFW 설치 및 포트 개방
 execute_with_prompt "UFW 설치 중..." "sudo apt-get install -y ufw"

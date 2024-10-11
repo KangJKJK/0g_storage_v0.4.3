@@ -60,76 +60,6 @@ wait_for_service() {
     return 1
 }
 
-# 안내 메시지
-echo -e "${YELLOW}설치 도중 문제가 발생하면 다음 명령어를 입력하고 다시 시도하세요:${NC}"
-echo -e "${YELLOW}sudo rm -f /root/0Gstorage-v0.4.3.sh${NC}"
-echo
-
-#!/bin/bash
-
-# 최적화 스크립트
-
-echo -e "${GREEN}시스템 최적화 작업을 시작합니다.${NC}"
-
-# 불필요한 패키지 자동 제거
-echo -e "${GREEN}불필요한 패키지 자동 제거 중...${NC}"
-sudo apt autoremove -y
-
-# .deb 파일 삭제
-echo -e "${GREEN}.deb 파일 삭제 중...${NC}"
-sudo rm /root/*.deb
-
-# 패키지 캐시 정리
-echo -e "${GREEN}패키지 캐시 정리 중...${NC}"
-sudo apt-get clean
-
-# /tmp 디렉토리 비우기
-echo -e "${GREEN}/tmp 디렉토리 비우기 중...${NC}"
-sudo rm -rf /tmp/*
-
-# 사용자 캐시 비우기
-echo -e "${GREEN}사용자 캐시 비우기 중...${NC}"
-rm -rf ~/.cache/*
-
-# .sh 및 .rz 파일 삭제
-echo -e "${GREEN}.sh 및 .rz 파일 삭제 중...${NC}"
-sudo rm -f /root/*.sh /root/*.rz
-
-# Docker가 설치되어 있는지 확인
-if command -v docker >/dev/null 2>&1; then
-    echo -e "${GREEN}Docker가 설치되어 있습니다. Docker 관련 작업을 수행합니다.${NC}"
-
-    # Docker 로그 정리 스크립트 작성
-    echo -e "${GREEN}Docker 로그 정리 스크립트 작성 중...${NC}"
-    echo -e '#!/bin/bash\ndocker ps -q | xargs -I {} docker logs --tail 0 {} > /dev/null' | sudo tee /usr/local/bin/docker-log-cleanup.sh
-    sudo chmod +x /usr/local/bin/docker-log-cleanup.sh
-
-    # Docker 로그 정리 작업을 크론에 추가
-    echo -e "${GREEN}크론 작업 추가 중...${NC}"
-    (crontab -l ; echo '0 0 * * * /usr/local/bin/docker-log-cleanup.sh') | sudo crontab -
-
-    # 중지된 모든 컨테이너 제거
-    echo -e "${GREEN}중지된 모든 컨테이너 제거 중...${NC}"
-    sudo docker container prune -f
-
-    # 사용하지 않는 모든 이미지 제거
-    echo -e "${GREEN}사용하지 않는 모든 이미지 제거 중...${NC}"
-    sudo docker image prune -a -f
-
-    # 사용하지 않는 모든 볼륨 제거
-    echo -e "${GREEN}사용하지 않는 모든 볼륨 제거 중...${NC}"
-    sudo docker volume prune -f
-
-    # 사용하지 않는 모든 데이터 정리
-    echo -e "${GREEN}사용하지 않는 모든 데이터 정리 중...${NC}"
-    sudo docker system prune -a -f
-else
-    echo -e "${RED}Docker가 설치되어 있지 않습니다. Docker 관련 작업을 생략합니다.${NC}"
-fi
-
-echo -e "${GREEN}시스템 최적화 작업이 완료되었습니다.${NC}"
-
-
 # zgs 서비스 중지 (오류가 나더라도 무시)
 stop_zgs_service() {
     echo -e "${GREEN}zgs 서비스 중지 중...${NC}"
@@ -145,7 +75,7 @@ read -p "설치하려는 패키지들에 대한 권한을 부여하려면 Enter�
 execute_with_prompt "필수 패키지 설치 중..." "sudo apt-get install -y clang cmake build-essential"
 execute_with_prompt "git 설치 중..." "sudo apt update && sudo apt install git -y"
 execute_with_prompt "stdbuf 설치 중..." "sudo apt-get install coreutils -y"
-sleep 2
+curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
 
 # 2. Go 설치
 if ! command -v go &> /dev/null; then
@@ -161,16 +91,13 @@ sleep 2
 # 3. Rust 설치
 execute_with_prompt "Rust 설치 중..." "curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y"
 
-# 4. .gz 파일 삭제
-execute_with_prompt "모든 .gz 파일 삭제 중..." "sudo find $HOME -name '*.gz' -type f -delete"
-
-# 5. 0g-storage-node 디렉토리 제거 및 리포지토리 클론
+# 4. 0g-storage-node 디렉토리 제거 및 리포지토리 클론
 if [ -d "$HOME/0g-storage-node" ]; then
     echo -e "${YELLOW}디렉토리 $HOME/0g-storage-node 가 이미 존재합니다. 삭제 중...${NC}"
     execute_with_prompt "기존 0g-storage-node 디렉토리 제거 중..." "sudo rm -rf $HOME/0g-storage-node"
 fi
 
-execute_with_prompt "0g-storage-node 리포지토리 클론 중..." "git clone -b v0.4.6 https://github.com/0glabs/0g-storage-node.git"
+execute_with_prompt "0g-storage-node 리포지토리 클론 중..." "git clone -b v0.5.1 https://github.com/0glabs/0g-storage-node.git"
 
 # 0g-storage-node 디렉토리로 이동
 echo -e "${YELLOW}디렉토리 이동 시도 중...${NC}"
@@ -213,7 +140,7 @@ chmod u+rw $CONFIG_FILE
 update_network_boot_nodes() {
     # 기존 네트워크 부트 노드가 있는지 확인하고, 있으면 제거합니다.
     sed -i '/network_boot_nodes = \[/d' $CONFIG_FILE
-    sed -i '/# configured as well to enable UDP discovery./a network_boot_nodes = ["/ip4/54.219.26.22/udp/1234/p2p/16Uiu2HAmTVDGNhkHD98zDnJxQWu3i1FL1aFYeh9wiQTNu4pDCgps","/ip4/52.52.127.117/udp/1234/p2p/16Uiu2HAkzRjxK2gorngB1Xq84qDrT4hSVznYDHj6BkbaE4SGx9oS","/ip4/18.162.65.205/udp/1234/p2p/16Uiu2HAm2k6ua2mGgvZ8rTMV8GhpW71aVzkQWy7D37TTDuLCpgmX"]' $CONFIG_FILE
+    sed -i '/# configured as well to enable UDP discovery./a network_boot_nodes = ["/ip4/54.219.26.22/udp/1234/p2p/16Uiu2HAmTVDGNhkHD98zDnJxQWu3i1FL1aFYeh9"]' $CONFIG_FILE
 }
 
 # 사용자에게 RPC 엔드포인트를 선택하도록 요청하는 함수
@@ -251,12 +178,12 @@ update_settings() {
     sed -i '/reward_contract_address = /d' $CONFIG_FILE
 
     # 새로운 설정 추가
-    sed -i '/# Flow contract address to sync event logs./a log_contract_address = "0x0460aA47b41a66694c0a73f667a1b795A5ED3556"' $CONFIG_FILE
+    sed -i '/# Flow contract address to sync event logs./a log_contract_address = "0xbD2C3F0E65eDF5582141C35969d66e34629cC768"' $CONFIG_FILE
     sed -i '/# the block number when flow contract deployed./a log_sync_start_block_number = 595059' $CONFIG_FILE
     sed -i '/# Number of blocks to confirm a transaction./a confirmation_block_count = 6' $CONFIG_FILE
-    sed -i '/# Mine contract address for incentive./a mine_contract_address = "0x1785c8683b3c527618eFfF78d876d9dCB4b70285"' $CONFIG_FILE
+    sed -i '/# Mine contract address for incentive./a mine_contract_address = "0x6815F41019255e00D6F34aAB8397a6Af5b6D806f"' $CONFIG_FILE
     sed -i '/# all files, and sufficient disk space is required./a auto_sync_enabled = true' $CONFIG_FILE
-    sed -i '/# shard_position = "0\/2"/a reward_contract_address = "0x0496D0817BD8519e0de4894Dc379D35c35275609"' $CONFIG_FILE
+    sed -i '/# shard_position = "0\/2"/a reward_contract_address = "0x51998C4d486F406a788B766d93510980ae1f9360"' $CONFIG_FILE
 }
 
 # miner_key를 config 파일에 업데이트하는 함수
@@ -280,23 +207,23 @@ echo -e "${GREEN}프라이빗키와 RPC 엔드포인트가 업데이트 되었�
 execute_with_prompt "프로필 업데이트 중..." "source ~/.profile"
 
 # 7. zgs.service 파일 생성
+
 execute_with_prompt "zgs.service 파일 생성 중..." "sudo tee /etc/systemd/system/zgs.service > /dev/null <<EOF
 [Unit]
 Description=ZGS Node
 After=network.target
 
 [Service]
-User=root
-WorkingDirectory=\$HOME/0g-storage-node/run
-ExecStart=\$HOME/0g-storage-node/target/release/zgs_node --config $HOME/0g-storage-node/run/config.toml
+User=$USER
+WorkingDirectory=$HOME/0g-storage-node/run
+ExecStart=$HOME/0g-storage-node/target/release/zgs_node --config $HOME/0g-storage-node/run/config.toml
 Restart=on-failure
 RestartSec=10
 LimitNOFILE=65535
 
 [Install]
 WantedBy=multi-user.target
-EOF"
-sleep 2
+EOF
 
 # 8. UFW 설치 및 포트 개방
 execute_with_prompt "UFW 설치 중..." "sudo apt-get install -y ufw"
@@ -304,13 +231,13 @@ read -p "UFW를 설치한 후 계속하려면 Enter를 누르세요..."
 execute_with_prompt "UFW 활성화 중...반응이 없으면 엔터를 누르세요." "sudo ufw enable"
 execute_with_prompt "필요한 포트 개방 중..." \
     "sudo ufw allow ssh && \
-     sudo ufw allow 26658 && \
-     sudo ufw allow 26656 && \
-     sudo ufw allow 6060 && \
-     sudo ufw allow 1317 && \
-     sudo ufw allow 9090 && \
-     sudo ufw allow 8545 && \
-     sudo ufw allow 9091"
+     sudo ufw allow 26658/tcp && \
+     sudo ufw allow 26656/tcp && \
+     sudo ufw allow 6060/tcp && \
+     sudo ufw allow 1317/tcp && \
+     sudo ufw allow 9090/tcp && \
+     sudo ufw allow 8545/tcp && \
+     sudo ufw allow 9091/tcp"
 sleep 2
 
 # 9. Systemd 서비스 재로드 및 zgs 서비스 시작

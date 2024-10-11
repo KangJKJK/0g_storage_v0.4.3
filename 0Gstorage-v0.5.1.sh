@@ -89,7 +89,15 @@ fi
 sleep 2
 
 # 3. Rust 설치
-execute_with_prompt "Rust 설치 중..." "curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y"
+execute_with_prompt "Rust 설치 확인 중..." "
+if command -v rustc >/dev/null 2>&1; then
+    echo 'Rust가 이미 설치되어 있습니다. 버전:'
+    rustc --version
+else
+    echo 'Rust를 설치합니다...'
+    curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
+fi
+"
 
 # 4. 0g-storage-node 디렉토리 제거 및 리포지토리 클론
 if [ -d "$HOME/0g-storage-node" ]; then

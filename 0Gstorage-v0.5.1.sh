@@ -105,7 +105,7 @@ if [ -d "$HOME/0g-storage-node" ]; then
     execute_with_prompt "기존 0g-storage-node 디렉토리 제거 중..." "sudo rm -rf $HOME/0g-storage-node"
 fi
 
-execute_with_prompt "0g-storage-node 리포지토리 클론 중..." "git clone -b v0.5.1 https://github.com/0glabs/0g-storage-node.git"
+execute_with_prompt "0g-storage-node 리포지토리 클론 중..." "git clone -b v0.6.0 https://github.com/0glabs/0g-storage-node.git"
 
 # 0g-storage-node 디렉토리로 이동
 echo -e "${YELLOW}디렉토리 이동 시도 중...${NC}"
